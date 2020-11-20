@@ -10,5 +10,8 @@ instance variables
 
 end CarTier
 
+
+CarTierTwo :: seats : nat
+							price : nat
 							
 							

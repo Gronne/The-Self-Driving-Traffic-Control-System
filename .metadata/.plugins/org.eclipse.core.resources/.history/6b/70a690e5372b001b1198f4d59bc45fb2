@@ -9,6 +9,3 @@ instance variables
 	price: Price;
 
 end CarTier
-
-							
-							
