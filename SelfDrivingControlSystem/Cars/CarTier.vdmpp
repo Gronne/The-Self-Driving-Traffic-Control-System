@@ -5,10 +5,20 @@ types
 	Price = nat;
 
 instance variables
-	seats: Seats;
-	price: Price;
+	protected seats: Seats;
+	protected price: Price;
+	
+	inv seats > 0 and price > 0;
+	
+	
+operations
+	public CarTier : nat * nat ==> CarTier
+		CarTier(nr_of_seats, price_for_ride) == 
+		( seats := nr_of_seats;
+		  price := price_for_ride )
+		pre nr_of_seats > 0 and price_for_ride > 0
+		post seats = nr_of_seats and price = price_for_ride;
 
 end CarTier
 
-							
 							

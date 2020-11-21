@@ -1,0 +1,12 @@
+
+class Location
+
+types
+	LOC = nat;
+
+instance variables
+	private location : LOC := 10;
+	
+
+
+end Location

@@ -1,0 +1,10 @@
+
+class ActorObject
+
+instance variables
+	protected id: Identification;
+	protected location: Location;			/* Think about how this is best updated? When asked about its loction should it ask the map for its location. But how is this done the best way? */
+																		/* But it is something that should be in Location class and not here. */
+operations													/* ActorObject1.id == ActorObject2.id */
+
+end ActorObject

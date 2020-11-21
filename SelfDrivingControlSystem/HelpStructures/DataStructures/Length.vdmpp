@@ -1,0 +1,19 @@
+
+class Length
+
+types 
+	l = nat;
+	
+instance variables
+	private length: l;
+	
+inv length > 0;
+	
+operations
+	Length: nat ==> Length
+	Length(le) == length := le
+	post length = le;
+
+
+
+end Length
