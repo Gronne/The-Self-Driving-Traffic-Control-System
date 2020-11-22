@@ -1,0 +1,15 @@
+
+
+class Route
+	
+	types
+		routeList = seq of Road
+	
+	instance variables
+		route: routeList := []
+		
+	/* What kind of invaraince should be here? */
+
+
+
+end Route

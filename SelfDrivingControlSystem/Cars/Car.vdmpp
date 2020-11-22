@@ -1,0 +1,36 @@
+
+
+class Car is subclass of ActorObject
+
+	values
+		private defaultCarLength: Length`length_t = 300;
+	
+	instance variables
+		protected length: Length;
+		protected route: Route;	
+		
+	inv length.getLength() > 0;
+	
+		
+	functions
+		protected LengthInv : Length * Length`length_t -> bool
+			LengthInv(lO, l) == lO.getLength() = l;
+		
+	
+	operations
+		public Car : () ==> Car
+			Car() == length := new Length(defaultCarLength)
+			post LengthInv(length, defaultCarLength);
+	
+		public Car : Length`length_t ==> Car
+			Car(lengthOfCar) == length := new Length(lengthOfCar)
+			pre lengthOfCar > 0
+			post LengthInv(length, lengthOfCar);
+
+		public updateRoute: Route ==> ()	/* Potential to call environment who changes the cars routes */
+			updateRoute(r) == route := r;
+			
+		private keepDistance : () ==> ()
+			keepDistance() == is not yet specified;
+
+end Car

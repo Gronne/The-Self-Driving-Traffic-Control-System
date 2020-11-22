@@ -1,0 +1,21 @@
+
+class Autonomous is subclass of Car 
+
+	types
+		public passengers_t = set of Passenger;
+		
+	instance variables
+		passengers: passengers_t := {};
+		travelHistory: TravelHistory;
+	
+	inv AutoCon(passengers);
+		
+		
+	functions
+		AutoCon : passengers_t -> bool
+			AutoCon(pas_set) == card pas_set = card {};
+
+	
+	operations
+
+end Autonomous

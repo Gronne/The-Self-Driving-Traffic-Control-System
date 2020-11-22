@@ -1,19 +1,24 @@
 
 class Length
 
-types 
-	l = nat;
+	types 
+		public length_t = nat;
+		
+	instance variables
+		private length: length_t;
+		
+	inv length > 0;
 	
-instance variables
-	private length: l;
+		
+	operations
 	
-inv length > 0;
-	
-operations
-	Length: nat ==> Length
-	Length(le) == length := le
-	post length = le;
-
-
+		public Length: length_t ==> Length
+			Length(le) == length := le
+			pre le > 0
+			post length = le;
+		
+		pure public getLength: () ==> length_t		/* pure is when you don't touch the object, only gets from it */
+			getLength() == return length
+			post RESULT = length;
 
 end Length
