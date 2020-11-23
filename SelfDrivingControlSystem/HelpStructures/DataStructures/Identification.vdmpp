@@ -7,19 +7,19 @@ class Identification
 	
 	instance variables
 		private math: MATH;
-		private id: ID_t;									/* Will become a constant after the constructor*/
+		private id_: ID_t;									/* Will become a constant after the constructor*/
 	
-	inv id > 0 and id < maxID;
+	inv id_ > 0 and id_ <= maxID;
 	
 	
 	operations
 	
 		public Identification : () ==> Identification
-			Identification() == id := generateID()
-			post id > 0;
+			Identification() == id_ := generateID()
+			post id_ > 0;
 		
 		pure public getID : () ==> ID_t
-			getID() == return id;
+			getID() == return id_;
 			
 		private generateID : () ==> ID_t
 			generateID() == return math.rand(maxID-1)+1

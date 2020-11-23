@@ -4,6 +4,6 @@ class Manual is subclass of Car
 	operations
 		public Manual : Length`length_t ==> Manual
 			Manual(lengthOfCar) == Car(lengthOfCar)
-			post LengthInv(length, lengthOfCar);
+			post LengthInv(length_, lengthOfCar);
 
 end Manual

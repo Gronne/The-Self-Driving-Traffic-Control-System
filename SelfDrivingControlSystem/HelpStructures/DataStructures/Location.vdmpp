@@ -5,7 +5,7 @@ class Location
 		loc_t = token;
 	
 	instance variables
-		private location : loc_t;
+		private location_ : loc_t;
 	
 	operations
 	

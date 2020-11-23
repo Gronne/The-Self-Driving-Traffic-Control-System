@@ -6,7 +6,7 @@ class Route
 		routeList = seq of Road
 	
 	instance variables
-		route: routeList := []
+		route_: routeList := []
 		
 	/* What kind of invaraince should be here? */
 

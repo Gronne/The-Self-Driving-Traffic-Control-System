@@ -1,24 +1,24 @@
 class CarTier
 
 types
-	Seats = nat;
-	Price = nat;
+	public seat_t = nat;
+	public price_t = nat;
 
 instance variables
-	protected seats: Seats;
-	protected price: Price;
+	protected seats_: seat_t;
+	protected price_: price_t;
 	
-	inv seats > 0 and price > 0;
+	inv seats_ > 0 and price_ > 0;
 	
 	
 operations
 	public CarTier : nat * nat ==> CarTier
 		CarTier(nr_of_seats, price_for_ride) == 
-		( seats := nr_of_seats;
-		  price := price_for_ride )
+		( seats_ := nr_of_seats;
+		  price_ := price_for_ride )
 		pre nr_of_seats > 0 and price_for_ride > 0
-		post seats = nr_of_seats and price = price_for_ride;
+		post seats_ = nr_of_seats and price_ = price_for_ride;
 
-end CarTier
+end CarTier	/* Would another name be better for this class. I have a hard time wrap this into a good design... */
 
 							

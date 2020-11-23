@@ -1,21 +1,30 @@
 
-class Autonomous is subclass of Car 
+class Autonomous is subclass of Car, CarTier
 
 	types
 		public passengers_t = set of Passenger;
 		
 	instance variables
-		passengers: passengers_t := {};
-		travelHistory: TravelHistory;
-	
-	inv AutoCon(passengers);
+		passengers_: passengers_t := {};
+		travelHistory_: TravelHistory;
+		
+		/* Invariance here must always hold true. THe invariance in the post condition must only hold true in that instance */
 		
 		
 	functions
-		AutoCon : passengers_t -> bool
+		private AutoCon : passengers_t -> bool
 			AutoCon(pas_set) == card pas_set = card {};
+			
+		
 
 	
 	operations
+		public Autonomous: CarTier`seat_t * CarTier`price_t * Length`length_t ==> Autonomous
+			Autonomous(seats, price, lengthOfCar) == (
+				Car(lengthOfCar); 
+				CarTier(seats, price);
+			)
+		post LengthInv(length_, lengthOfCar) and AutoCon(passengers_) and price_ > 0 and seats > 0; 
+		
 
 end Autonomous

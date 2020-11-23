@@ -11,26 +11,26 @@ class Speed
 		public speed_t = nat;
 		
 	values
-		defaultSpeed: speed_t = 1;
+		private defaultSpeed: speed_t = 1;
 	
 	
 	instance variables
-		private speed: speed_t := defaultSpeed;		/* Should this be possible to change? Yes, The cars can otherwise not change their speed */
+		private speed_: speed_t := defaultSpeed;	/* Should this be possible to change? Yes, The cars can otherwise not change their speed */
 																							/* Should this class check up with location and previous location to check the speed of the car? */
 																							/* For now will it just be a constant, emulating a speed */
 																							/* Could also just be a data type that is set another place and do not care about anything*/
-		inv speed >= 0;														/* This should be a part of the environment? and then environment has a history of positions */
+		inv speed_ >= 0;													/* This should be a part of the environment? and then environment has a history of positions */
 	
 	
 	operations
 	
 		public Speed : speed_t ==> Speed
-			Speed(sp) == speed := sp
-			pre speed = defaultSpeed
-			post speed = sp;
+			Speed(speed) == speed_ := speed
+			pre speed_ = defaultSpeed
+			post speed_ = speed;
 		
 		pure public getSpeed: () ==> speed_t
-			getSpeed() == return speed
-			post RESULT = speed and RESULT >= 0;
+			getSpeed() == return speed_
+			post RESULT = speed_ and RESULT >= 0;
 
 end Speed
