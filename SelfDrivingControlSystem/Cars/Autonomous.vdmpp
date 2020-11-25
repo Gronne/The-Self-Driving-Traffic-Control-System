@@ -15,6 +15,9 @@ class Autonomous is subclass of Car, CarTier
 		private AutoCon : passengers_t -> bool
 			AutoCon(pas_set) == card pas_set = card {};
 			
+		private passengerInSet : Passenger * passengers_t -> bool
+			passengerInSet(passenger, passengerSet) == passenger.getID() in set {p.getID() | p in set passengerSet};
+			
 		
 
 	
@@ -23,8 +26,22 @@ class Autonomous is subclass of Car, CarTier
 			Autonomous(seats, price, lengthOfCar) == (
 				Car(lengthOfCar); 
 				CarTier(seats, price);
+				travelHistory_ := new TravelHistory();
 			)
 		post LengthInv(length_, lengthOfCar) and AutoCon(passengers_) and price_ > 0 and seats > 0; 
+		
+		
+		private  pickUpPassenger : Passenger ==> ()
+			pickUpPassenger(passenger) == passengers_ := passengers_ union {passenger}
+		pre passengerInSet(passenger, passengers_) = false
+		post card passengers_ > 0 and passengerInSet(passenger, passengers_);
+		
+		
+		private dropOffPassenger : Passenger ==> ()
+			dropOffPassenger(passenger) == passengers_ := passengers_ \ {passenger}
+		pre passengerInSet(passenger, passengers_)
+		post card passengers_ >= 0 and passengerInSet(passenger, passengers_) = false;
+			
 		
 
 end Autonomous

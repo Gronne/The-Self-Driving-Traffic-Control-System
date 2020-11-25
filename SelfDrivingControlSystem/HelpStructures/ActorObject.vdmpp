@@ -7,4 +7,14 @@ class ActorObject
 																			/* But it is something that should be in Location class and not here. */
 																			/* ActorObject1.id == ActorObject2.id, should I have a starting location as a initial element? This can also be decided another place */
 	
+	operations
+	public ActorObject : () ==> ActorObject
+		ActorObject() == (
+			id_ := new Identification();
+			location_ := new Location());
+	
+	pure public getID : () ==> Identification`ID_t
+		getID() == return id_.getID()
+		post RESULT = id_.getID();
+	
 end ActorObject
