@@ -12,12 +12,17 @@ instance variables
 	
 	
 operations
-	public CarTier : nat * nat ==> CarTier
-		CarTier(nr_of_seats, price_for_ride) == 
-		( seats_ := nr_of_seats;
+	public CarTier : seat_t * price_t ==> CarTier
+		CarTier(nr_of_seats, price_for_ride) == ( 
+			seats_ := nr_of_seats;
 		  price_ := price_for_ride )
 		pre nr_of_seats > 0 and price_for_ride > 0
 		post seats_ = nr_of_seats and price_ = price_for_ride;
+		
+	protected Constructor : seat_t * price_t ==> ()
+			Constructor(nr_of_seats, price_for_ride) == ( 
+			seats_ := nr_of_seats;
+		  price_ := price_for_ride );
 
 end CarTier	/* Would another name be better for this class. I have a hard time wrap this into a good design... */
 

@@ -24,8 +24,8 @@ class Autonomous is subclass of Car, CarTier
 	operations
 		public Autonomous: CarTier`seat_t * CarTier`price_t * Length`length_t ==> Autonomous
 			Autonomous(seats, price, lengthOfCar) == (
-				Car(lengthOfCar); 
-				CarTier(seats, price);
+				Car`Constructor(lengthOfCar); 
+				CarTier`Constructor(seats, price);
 				travelHistory_ := new TravelHistory();
 			)
 		post LengthInv(length_, lengthOfCar) and AutoCon(passengers_) and price_ > 0 and seats > 0; 
