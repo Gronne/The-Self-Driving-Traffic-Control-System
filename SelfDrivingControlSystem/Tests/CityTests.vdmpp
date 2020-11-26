@@ -1,0 +1,17 @@
+class CityTests is subclass of TestCase
+	
+	operations
+		public CityTests : seq of char ==> CityTests
+			CityTests(name) == ( setName(name); );
+			
+		protected RunTest : () ==> ()
+			RunTest() == is not yet specified;
+			
+		
+		protected TestDefaultConstruct : () ==> ()
+			TestDefaultConstruct() == (
+				dcl emptyCity : City := new City();
+				assertTrue(isofclass(City, emptyCity));
+			);
+			
+end CityTests

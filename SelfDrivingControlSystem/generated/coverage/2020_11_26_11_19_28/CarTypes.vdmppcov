@@ -1,0 +1,6 @@
+class CarTypes
+
+types
+	carTypes = <small> | <medium> | <large>;
+
+end CarTypes

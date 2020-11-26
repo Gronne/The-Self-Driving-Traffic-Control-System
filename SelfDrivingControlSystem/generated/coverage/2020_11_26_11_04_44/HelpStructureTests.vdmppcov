@@ -1,0 +1,10 @@
+class HelpStructureTests is subclass of TestCase
+	
+	operations
+		public HelpStructureTests : seq of char ==> HelpStructureTests
+			HelpStructureTests(name) == ( setName(name); );
+			
+		protected RunTest : () ==> ()
+			RunTest() == is not yet specified;
+			
+end HelpStructureTests

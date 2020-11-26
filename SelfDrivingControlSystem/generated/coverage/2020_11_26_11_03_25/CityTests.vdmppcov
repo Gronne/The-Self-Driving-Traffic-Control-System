@@ -1,0 +1,10 @@
+class CityTests is subclass of TestCase
+	
+	operations
+		public CityTests : seq of char ==> CityTests
+			CityTests(name) == ( setName(name); );
+			
+		protected RunTest : () ==> ()
+			RunTest() == is not yet specified;
+			
+end CityTests

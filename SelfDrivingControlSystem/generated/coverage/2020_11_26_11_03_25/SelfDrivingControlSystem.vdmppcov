@@ -1,0 +1,9 @@
+
+class SelfDrivingControlSystem
+	
+	operations
+		public SelfDrivingControlSystem : () ==> SelfDrivingControlSystem
+			SelfDrivingControlSystem() == is not yet specified;
+
+
+end SelfDrivingControlSystem
