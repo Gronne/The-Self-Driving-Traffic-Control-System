@@ -1,7 +1,114 @@
 
 
 class CityMap
-
-
+	types
+		public intersectionMap_t = map Intersection to seq of Road;   -- Possible for a road to connect to the same intersection multiple times, the sequence does not matter
+		public roadMap_t = map Road to (Intersection * Intersection); -- A Road must be connected to two intersections 
+		public stringSyntax_t = set of seq of char;
+	
+	instance variables
+		interMap_ : intersectionMap_t := { |-> };
+		roadMap_ : roadMap_t := { |-> };
+	
+	operations
+		public CityMap : () ==> CityMap
+			CityMap() == return self;
+			
+		public CityMap : ? ==> CityMap
+			CityMap(arg) == (
+				if is_(arg, intersectionMap_t) then 
+					intersectionConstructor(arg)
+				elseif is_(arg, roadMap_t) then
+					roadConstructor(arg)			
+				elseif is_(arg, stringSyntax_t) then
+					stringConstructor(arg);
+			);
+			
+		private intersectionConstructor : intersectionMap_t ==> ()
+			intersectionConstructor(interMap) == (
+				interMap_ := interMap;
+			);
+			
+		private roadConstructor : roadMap_t ==> ()
+			roadConstructor(roadMap) == (
+				roadMap_ := roadMap;
+			);
+			
+		public stringConstructor : stringSyntax_t ==> ()
+			stringConstructor(stringSet) == (
+				dcl interMap : intersectionMap_t := { |-> };
+				interMap_ := interMap;
+			);
+			
+		public CityMap : intersectionMap_t * roadMap_t ==> CityMap
+			CityMap(interMap, roadMap) == (
+				interMap_ := interMap;
+				roadMap_ := roadMap;
+			);
+			
+		
+			
+		/*private generateRoadMapFromInterMap : intersectionMap_t ==> roadMap_t
+			generateRoadMapFromInterMap(interMap) == (
+				
+			);*/
+		
 
 end CityMap
+
+
+
+
+class CollectionOfCityMaps
+	operations
+		public SimpleMap : () ==> CityMap`intersectionMap_t
+			SimpleMap() == (
+				dcl interA : Intersection := new Intersection();
+				dcl interB : Intersection := new Intersection();
+				dcl interC : Intersection := new Intersection();
+				dcl interD : Intersection := new Intersection();
+				dcl interE : Intersection := new Intersection();
+				
+				dcl roadAB : Road := new Road();
+				dcl roadAE : Road := new Road();
+				dcl roadAD : Road := new Road();
+				dcl roadBC : Road := new Road();
+				dcl roadDC : Road := new Road();
+				dcl roadDE : Road := new Road();
+				dcl roadCE : Road := new Road();
+				dcl roadBE : Road := new Road();	--Possible to create one way roads??
+				
+				return { 	interA |-> [roadAB, roadAE, roadAD], 
+									interB |-> [roadAB, roadBC, roadBE], 
+									interC |-> [roadBC, roadDC, roadCE], 
+									interD |-> [roadAD, roadDC, roadDE], 
+									interE |-> [roadAE, roadDE, roadCE, roadBE] };
+			);
+			
+			
+		public StringMap : () ==> set of seq of char
+			StringMap() == (
+				return { 	"A=B:7:80", 	-- = -> Double direction
+									"B=C:7:80",		-- - -> Single direction
+									"C=D:7:80",		-- : -> length
+									"D=A:7:80",		-- :: -> speedLimit
+									"A-E:5:40",
+									"B-E:5:40",
+									"C-E:5:40",
+									"E-D:5:40" };
+			);
+
+end CollectionOfCityMaps
+
+
+
+
+
+
+
+
+
+
+
+
+

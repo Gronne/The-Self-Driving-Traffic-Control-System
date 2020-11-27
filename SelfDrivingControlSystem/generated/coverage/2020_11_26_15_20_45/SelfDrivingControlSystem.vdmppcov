@@ -6,7 +6,7 @@ class SelfDrivingControlSystem
 			
 		operations		
 		private SelfDrivingControlSystem : () ==> SelfDrivingControlSystem
-			SelfDrivingControlSystem() == return self;
+			SelfDrivingControlSystem() == is not yet specified;
 			
 		public SelfDrivingControlSystem : City ==> SelfDrivingControlSystem
 			SelfDrivingControlSystem(city) == (

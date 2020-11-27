@@ -1,0 +1,30 @@
+class SDCSTests is subclass of TestCase
+	
+	operations
+		public SDCSTests : seq of char ==> SDCSTests
+			SDCSTests(name) == ( setName(name); );
+			
+		protected RunTest : () ==> ()
+			RunTest() == (
+				TestDefaultConstruct();
+			);
+			
+			
+		protected TestDefaultConstruct : () ==> ()
+			TestDefaultConstruct() == (
+				dcl system : SelfDrivingControlSystem := new SelfDrivingControlSystem();
+				assertTrue(isofclass(SelfDrivingControlSystem, system));
+			);
+			
+		
+		protected TestConstructSystemWithCity : () ==> ()
+		 TestConstructSystemWithCity() == (
+		 		--create a system and initialize it with a city--
+		 		dcl city : City := new City();
+		 		dcl system : SelfDrivingControlSystem := new SelfDrivingControlSystem(city);
+				assertTrue(isofclass(SelfDrivingControlSystem, system));
+		 );
+		 
+		
+			
+end SDCSTests

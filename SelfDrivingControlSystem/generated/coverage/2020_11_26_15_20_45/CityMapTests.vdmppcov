@@ -1,0 +1,19 @@
+class CityMapTests is subclass of TestCase
+	
+	operations
+		public CityMapTests : seq of char ==> CityMapTests
+			CityMapTests(name) == ( setName(name); );
+			
+		protected RunTest : () ==> ()
+			RunTest() == (
+				TestDefaultConstruct();
+			);
+			
+			
+		protected TestDefaultConstruct : () ==> ()
+			TestDefaultConstruct() == (
+				dcl emptyMap : CityMap := new CityMap();
+				assertTrue(isofclass(CityMap, emptyMap));
+			);
+			
+end CityMapTests

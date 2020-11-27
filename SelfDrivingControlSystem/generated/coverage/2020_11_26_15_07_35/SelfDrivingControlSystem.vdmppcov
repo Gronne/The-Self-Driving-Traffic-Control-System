@@ -4,15 +4,11 @@ class SelfDrivingControlSystem
 		instance variables
 			city_ : City;
 			
-		operations		
-		private SelfDrivingControlSystem : () ==> SelfDrivingControlSystem
-			SelfDrivingControlSystem() == return self;
-			
+		operations
 		public SelfDrivingControlSystem : City ==> SelfDrivingControlSystem
 			SelfDrivingControlSystem(city) == (
 				city_ := city;
 			);
-			
 			
 		
 
