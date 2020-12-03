@@ -1,9 +1,0 @@
-
-class World
-		operations
-			public Run : () ==> ()
-				Run() == (
-					IO`println("Hello, World");
-				);
-
-end World

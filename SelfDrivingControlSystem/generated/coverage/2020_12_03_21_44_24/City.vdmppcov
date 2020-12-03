@@ -1,0 +1,15 @@
+
+
+class City
+
+	instance variables
+		cityMap_ : CityMap := new CityMap();
+		
+	operations
+		public City : CityMap ==> City
+			City(cityMap) == (
+				cityMap_ := cityMap;
+			);
+
+
+end City

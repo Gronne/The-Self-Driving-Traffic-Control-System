@@ -1,0 +1,9 @@
+From,To,Direction,SpeedLimit,Length
+"A","B","bi",80,7
+"B","C","bi",80,7
+"C","D","bi",80,7
+"D","A","bi",80,7
+"A","E","mono",50,5
+"B","E","mono",50,5
+"C","E","mono",50,5
+"E","D","mono",50,5

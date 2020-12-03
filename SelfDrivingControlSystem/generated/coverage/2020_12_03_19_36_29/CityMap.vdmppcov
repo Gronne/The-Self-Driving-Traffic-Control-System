@@ -1,0 +1,165 @@
+
+
+class CityMap
+	types
+		protected intersectionMap_t = map Identification`ID_t to seq of Identification`ID_t;   -- Possible for a road to connect to the same intersection multiple times, the sequence does not matter
+		protected roadMap_t = map Identification`ID_t to (Identification`ID_t * Identification`ID_t); -- A Road must be connected to two intersections 
+		protected idInterMap_t = map Identification`ID_t to Intersection;
+		protected idRoadMap_t = map Identification`ID_t to Road;
+		protected construction_types = Intersection | Road;
+	
+	
+	instance variables
+		interMap_ : intersectionMap_t := { |-> };
+		roadMap_ : roadMap_t := { |-> };
+		idToInterMap_ : idInterMap_t := { |-> };
+		idToRoadMap_ : idRoadMap_t := { |-> };
+		
+	inv InvSameKeysInMaps(roadMap_, idToRoadMap_) and 
+			InvSameKeysInMaps(interMap_, idToInterMap_) and 
+			InvAllInterMapRngIdsInIdRoadMap(interMap_, idToRoadMap_) and 
+			InvAllRoadMapRngIdsInIdInterMap(roadMap_, idToInterMap_) and
+			InvAllIdKeysMatchObjectID(idToInterMap_) and 
+			InvAllIdKeysMatchObjectID(idToRoadMap_) and 
+			InvMaxNInMappings(interMap_, 2);
+		
+		
+	functions
+		protected InvSameKeysInMaps : map ? to ? * map ? to ? -> bool
+			InvSameKeysInMaps(mapA, mapB) == (forall keyA in set dom mapA & exists keyB in set dom mapB & keyA = keyB);
+																					 
+		protected InvAllInterMapRngIdsInIdRoadMap : intersectionMap_t * idRoadMap_t -> bool
+			InvAllInterMapRngIdsInIdRoadMap(interMap, idToRoadMap) == forall idList in set rng interMap & forall id in seq idList & exists roadId in set dom idToRoadMap & roadId = id;
+			
+		protected InvAllRoadMapRngIdsInIdInterMap : roadMap_t * idInterMap_t -> bool
+			InvAllRoadMapRngIdsInIdInterMap(roadMap, idToInterMap) == forall idTuple in set rng roadMap & forall id in seq [idTuple.#1, idTuple.#2] & exists interId in set dom idToInterMap & id = interId;
+			
+		protected InvAllIdKeysMatchObjectID : map Identification`ID_t to CityConstruction -> bool
+			InvAllIdKeysMatchObjectID(idMap) == forall id in set dom idMap & idMap(id).getID() = id;
+			
+		protected InvMaxNInMappings : intersectionMap_t * nat -> bool
+			InvMaxNInMappings(interMap, underValue) == forall key in set dom interMap & maxNIdenticalInSeq(interMap(key), underValue);
+			
+	
+		protected InvIdInMap : ? * Identification`ID_t -> bool
+			InvIdInMap(mapToCheck, id) == exists key in set dom mapToCheck & key = id;
+			
+			
+		protected maxNIdenticalInSeq : seq of ? * nat -> bool
+			maxNIdenticalInSeq(sequence, underValue) == forall element in set elems sequence & countElementInSeq(sequence, element) <= underValue;
+			
+		protected countElementInSeq : seq of ? * ? -> nat
+			countElementInSeq(sequence, element) ==
+				if len sequence = 0 then 0
+				else (if element = hd sequence then 1 else 0) + countElementInSeq(tl sequence, element)
+			measure len sequence;
+	
+	
+		protected addToIdMap : map Identification`ID_t to construction_types * construction_types -> map Identification`ID_t to construction_types
+			addToIdMap(oldMap, element) == (
+				oldMap ++ {element.getID() |-> element}
+			)
+			post InvIdInMap(RESULT, element.getID());
+			
+			
+		protected addNewInterToInterMap : intersectionMap_t * Intersection -> intersectionMap_t
+			addNewInterToInterMap(oldMap, intersection) == (
+				{intersection.getID() |-> []} ++ oldMap
+			)
+			post InvIdInMap(RESULT, intersection.getID());
+			
+			
+		protected addNewRoadToInterMap : intersectionMap_t * Road * Intersection -> intersectionMap_t
+			addNewRoadToInterMap(oldMap, road, intersection) == (
+				oldMap ++ { intersection.getID() |-> oldMap(intersection.getID()) ^ [road.getID()] }
+			)
+			pre InvIdInMap(oldMap, intersection.getID())
+			post exists element in seq RESULT(intersection.getID()) & element = road.getID();
+			
+			
+		protected addToRoadMap : roadMap_t * Road * Intersection * Intersection -> roadMap_t
+			addToRoadMap(oldMap, road, interA, interB) == (
+				oldMap ++ {road.getID() |-> mk_(interA.getID(), interB.getID())}
+			)
+			post InvIdInMap(RESULT, road.getID());
+			
+		
+		
+	
+	operations
+		public CityMap : () ==> CityMap
+			CityMap() == return self;
+			
+		public CityMap : CityMap ==> CityMap
+			CityMap(oldCityMap) == (
+				interMap_ := oldCityMap.interMap_;
+				roadMap_ := oldCityMap.roadMap_;
+				
+				idToInterMap_ := oldCityMap.idToInterMap_;
+				idToRoadMap_ := oldCityMap.idToRoadMap_;
+			)			
+		post interMap_ = oldCityMap.interMap_ and roadMap_ = oldCityMap.roadMap_;
+		
+		
+		public addIntersection : Intersection ==> ()
+			addIntersection(intersection) == (
+				idToInterMap_ := addToIdMap(idToInterMap_, intersection);
+				interMap_ := addNewInterToInterMap(interMap_, intersection);
+			)
+			post InvSameKeysInMaps(idToInterMap_, interMap_);
+			
+		public addRoad : Road * Intersection * Intersection ==> ()
+			addRoad(road, interFrom, interTo) == (
+				idToRoadMap_ := addToIdMap(idToRoadMap_, road);
+				roadMap_ := addToRoadMap(roadMap_, road, interFrom, interTo);
+				interMap_ := addNewRoadToInterMap(interMap_, road, interFrom);
+			)
+			pre InvIdInMap(idToInterMap_, interFrom.getID()) and InvIdInMap(idToInterMap_, interTo.getID())
+			post InvSameKeysInMaps(idToRoadMap_, roadMap_);
+		
+		public getSetOfInter : () ==> set of Intersection
+			getSetOfInter() == (
+				return rng idToInterMap_;
+			);
+			
+			
+		public getSetOfRoad : () ==> set of Road
+			getSetOfRoad() == (
+				return rng idToRoadMap_;
+			);
+			
+						
+		public getSeqOfRoad : Intersection ==> seq of Road
+			getSeqOfRoad(intersection) == (
+				dcl listOfIDs : seq of Identification`ID_t := interMap_(intersection.getID());
+				return [ idToRoadMap_(id) | id in seq listOfIDs ];
+			);
+			
+		public getInterTupleFromRoad : Road ==> (Intersection * Intersection)
+			getInterTupleFromRoad(road) == (
+				dcl interIdA : Identification`ID_t := roadMap_(road.getID()).#1;
+				dcl interIdB : Identification`ID_t := roadMap_(road.getID()).#2;
+				return mk_( idToInterMap_(interIdA) , idToInterMap_(interIdB) );
+			)
+		pre exists id in set dom roadMap_ & id = road.getID();
+			
+
+end CityMap
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
