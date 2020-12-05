@@ -1,9 +1,0 @@
-
-class Manual is subclass of Car
-
-	operations
-		public Manual : Length`length_t ==> Manual
-			Manual(lengthOfCar) == Car`Constructor(lengthOfCar)		--Single line of comment
-			post LengthInv(length_, lengthOfCar);
-
-end Manual

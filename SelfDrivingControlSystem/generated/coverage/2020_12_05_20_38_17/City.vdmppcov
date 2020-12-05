@@ -1,0 +1,93 @@
+
+
+class City
+
+	instance variables
+		cityMap_ : CityMap := new CityMap();
+		passengers_ : set of Passenger := {};
+		newPassengers_ : seq of Passenger := [];
+		
+	inv noMatch(newPassengers_);
+	
+	functions
+		protected noMatch : seq of ? -> bool
+			noMatch(sequence) == len sequence = card elems sequence;
+		
+	operations
+		public City : CityMap ==> City
+			City(cityMap) == (
+				cityMap_ := cityMap;
+			);
+			
+		
+		public getCityMap : () ==> CityMap
+			getCityMap() == return cityMap_;
+			
+		
+		public getNewPassenger : () ==> Passenger
+			getNewPassenger() == (
+				dcl newPassenger : Passenger := hd newPassengers_;
+				newPassengers_ := tl newPassengers_;
+				return newPassenger;
+			)
+		pre len newPassengers_ > 0
+		post forall passenger in seq newPassengers_ & passenger <> RESULT; 
+		
+		-------------- Internal Operations --------------	
+		/*
+		protected createPedestrian : () ==> ()
+			createPedestrian() == (
+				
+			);
+			
+			
+		protected createPassenger : () ==> ()
+			createPassenger() == (
+			
+			);
+			
+			
+		protected createManualCar : () ==> ()
+			createManualCar() == (
+			
+			);
+			
+			
+		protected blockIntersection : () ==> ()
+			blockIntersection() == (
+			
+			);
+			
+		
+		protected blockRoad : () ==> ()
+			blockRoad() == (
+			
+			);
+			
+			
+		protected notifySystemAboutCrash : () ==> ()
+			notifySystemAboutCrash() == (
+			
+			);
+			
+		
+		protected notifySystemAboutNewPassenger : () ==> ()
+			notifySystemAboutNewPassenger() == (
+			
+			);
+			
+		
+		protected createRoute : Manual ==> ()
+			createRoute(manualCar) == (
+			
+			);
+			
+			
+		protected createRoute : Pedestrian ==> ()
+			createRoute(manualCar) == (
+			
+			);
+			*/
+
+
+end City
