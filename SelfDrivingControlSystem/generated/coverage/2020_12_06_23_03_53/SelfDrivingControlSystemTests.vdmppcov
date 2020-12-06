@@ -1,0 +1,52 @@
+class SDCSTests is subclass of TestCase
+	
+	operations
+		public SDCSTests : seq of char ==> SDCSTests
+			SDCSTests(name) == ( setName(name); );
+			
+		protected RunTest : () ==> ()
+			RunTest() == (
+				TestConstructSystemWithEmptyCity();
+				TestConstructSystemWithEmptyCityMap();
+				TestConstructSystemWithSimpleCity();
+			);
+			
+		
+		protected TestConstructSystemWithEmptyCity : () ==> ()
+		 TestConstructSystemWithEmptyCity() == (
+		 		dcl city : City := new City();
+		 		dcl system : SelfDrivingControlSystem := new SelfDrivingControlSystem(city);
+				assertTrue(isofclass(SelfDrivingControlSystem, system));
+		 );
+		 
+		 
+		 protected TestConstructSystemWithEmptyCityMap : () ==> ()
+		 TestConstructSystemWithEmptyCityMap() == (
+		 		dcl emptyCityMap : CityMap := new CityMap();
+		 		dcl city : City := new City(emptyCityMap);
+		 		dcl system : SelfDrivingControlSystem := new SelfDrivingControlSystem(city);
+				assertTrue(isofclass(SelfDrivingControlSystem, system));
+		 );
+		 
+		 
+		 protected TestConstructSystemWithSimpleCity : () ==> ()
+		 TestConstructSystemWithSimpleCity() == (
+		 		dcl simpleCityMap : CityMap := CityMapFileFactory`loadCity("SimpleCity", "SimpleCityNodes");
+		 		dcl city : City := new City(simpleCityMap);
+		 		dcl system : SelfDrivingControlSystem := new SelfDrivingControlSystem(city);
+				assertTrue(isofclass(SelfDrivingControlSystem, system));
+		 );
+		 
+		 
+		 
+
+end SDCSTests
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,166 @@
+
+class CSVCityMapFile is subclass of ICityMapFile
+	types
+		csv_road_header_t = (IFile`string_t | Speed`speed_t | Length`length_t); 
+		csv_inter_header_t = (IFile`string_t | Intersection`interTypes);
+		
+		protected row_object :: From	: IFile`string_t | Identification`ID_t
+												 		To		:	IFile`string_t | Identification`ID_t
+											   		Direction		: IFile`string_t
+											 	 		SpeedLimit	: Speed`speed_t
+												 		Length	: Length`length_t;
+												 		
+		protected inter_object :: ID 	 : Identification`ID_t
+															Type : Intersection`interTypes;
+									
+	values
+		bi_directional = "bi";
+		mono_directional = "mono";
+		
+	functions
+		public getElementIndexInSeq : seq of ? * ? -> nat1
+			getElementIndexInSeq(sequence, element) == let index in set inds sequence be st sequence(index) = element in index;
+			
+		protected validRows : seq of row_object -> bool
+			validRows(rows) == forall row in seq rows & 
+																			(row.Direction = bi_directional or row.Direction = mono_directional) and 
+																			row.SpeedLimit > 0 and
+																			row.Length > 0;
+		
+		--protected validIntersections : seq of inter_object -> bool
+		--	validIntersections(interRows) == forall interRow in set elems interRows & is_(interRow.Type, Intersection`interTypes); 
+
+	operations
+	
+		static public load : IFile`string_t * IFile`string_t ==> CityMap
+			load(nameRoad, nameInter) == (
+				return load("", nameRoad, "", nameInter);
+			);
+			
+		static public load : IFile`string_t * IFile`string_t * IFile`string_t * IFile`string_t ==> CityMap
+			load(addressRoad, nameRoad, addressInter, nameInter) == (
+				dcl csvRows : seq of row_object := CSVCityMapFile`loadCsvRows(addressRoad, nameRoad);
+				dcl interRows : seq of inter_object := CSVCityMapFile`loadInterRows(addressInter, nameInter);
+				dcl cityMap : CityMap := CSVCityMapFile`csvRows2CityMap(csvRows, interRows);
+				return cityMap;
+			);
+			
+		static public save : IFile`string_t * IFile`string_t * CityMap ==> ()
+			save(nameRoad, nameInter, cityMap) == (
+				save("", nameRoad, "", nameInter, cityMap);
+			);
+			
+		static public save : IFile`string_t * IFile`string_t * IFile`string_t * IFile`string_t * CityMap ==> ()
+			save(addressRoad, nameRoad, addressInter, nameInter, cityMap) == (
+				dcl csvRows : seq of row_object := CSVCityMapFile`cityMap2CsvRows(cityMap);
+				dcl interRows : seq of inter_object := CSVCityMapFile`cityMap2InterRows(cityMap);
+				saveCsvRows(addressRoad, nameRoad, csvRows);
+				saveCsvNodes(addressInter, nameInter, interRows);
+			);
+			
+			
+		static protected loadCsvRows : IFile`string_t * IFile`string_t ==> seq of row_object
+			loadCsvRows(address, name) == (
+				dcl file_name : IFile`string_t := address ^ name;
+				let mk_(ok,lines) = CSV`flinecount(file_name)
+			    in
+			      if ok 
+			      then (
+			      			dcl rows : seq of row_object := [];
+			            for i = 2 to lines do
+				             let mk_(ok,[From,To,Direction,SpeedLimit,Length]) = CSV`freadval[seq of csv_road_header_t](file_name,i)
+				             in 
+				             		rows := rows ^ [mk_row_object(From, To, Direction, SpeedLimit, Length)];
+				          return rows;
+			           )
+			      else error;
+			)
+			post validRows(RESULT);
+			
+			
+		static protected loadInterRows : IFile`string_t * IFile`string_t ==> seq of inter_object
+			loadInterRows(address, name) == (
+				dcl file_name : IFile`string_t := address ^ name;
+				let mk_(ok,lines) = CSV`flinecount(file_name)
+			    in
+			      if ok 
+			      then (
+			      			dcl rows : seq of inter_object := [];
+			            for i = 2 to lines do
+				             let mk_(ok,[ID, Type]) = CSV`freadval[seq of csv_inter_header_t](file_name,i)
+				             in (
+				             		rows := rows ^ [mk_inter_object(ID, Type)];
+				             	);
+				             		
+				          return rows;
+			           )
+			      else error;
+			);
+						
+			
+		static protected saveCsvRows : IFile`string_t * IFile`string_t * seq of row_object ==> ()
+			saveCsvRows(address, name, csvRows) == (
+				dcl file_name : IFile`string_t := address ^ name;
+				dcl status : bool := CSV`fwriteval(file_name, ["From", "To", "Direction", "SpeedLimit", "Length"], <start>);
+				for row in csvRows do status := CSV`fwriteval(file_name, [row.From, row.To, row.Direction, row.SpeedLimit, row.Length], <append>);
+				return;
+			)
+			pre validRows(csvRows);
+			
+			
+		static protected saveCsvNodes : IFile`string_t * IFile`string_t * seq of inter_object ==> ()
+			saveCsvNodes(address, name, interRows) == (
+				dcl file_name : IFile`string_t := address ^ name;
+				dcl status : bool := CSV`fwriteval(file_name, ["ID", "Type"], <start>);
+				for row in interRows do status := CSV`fwriteval(file_name, [row.ID, row.Type], <append>);
+				return;
+			);
+			
+			
+		static protected csvRows2CityMap : seq of row_object * seq of inter_object ==> CityMap
+			csvRows2CityMap(rowObjects, interObjects) == (
+				dcl cityMap : CityMap := new CityMap();
+				dcl interMap : map Identification`ID_t to Intersection`interTypes := {interRow.ID |-> interRow.Type | interRow in seq interObjects };
+				dcl uniqueIDs : set of (IFile`string_t | Identification`ID_t) := { row.From | row in seq rowObjects } union { row.To | row in seq rowObjects };
+				for all id in set uniqueIDs do cityMap.addIntersection(CityConstructionFactory`createIntersection(id, interMap(id)));
+				for row in rowObjects do (
+						dcl road : Road := CityConstructionFactory`createRoad(row.Length, row.SpeedLimit);
+						dcl interFrom : Intersection := CityConstructionFactory`createIntersection(row.From, interMap(row.From));
+						dcl interTo : Intersection := CityConstructionFactory`createIntersection(row.To, interMap(row.To));
+						if row.Direction = bi_directional then 
+								cityMap.addRoad(road, interTo, interFrom);
+						cityMap.addRoad(road, interFrom, interTo);
+					);
+				return cityMap;
+			);
+			
+		static protected cityMap2CsvRows : CityMap ==> seq of row_object
+			cityMap2CsvRows(cityMap) == (
+				dcl rows : seq of row_object := [];
+				for all intersection in set cityMap.getSetOfInter() do (
+						dcl roads : seq of Road := cityMap.getSeqOfRoad(intersection);
+						for road in roads do (
+							dcl interA : Intersection := cityMap.getInterTupleFromRoad(road).#1;
+							dcl interB : Intersection := cityMap.getInterTupleFromRoad(road).#2;
+							dcl row : row_object := mk_row_object( interA.getID(), interB.getID(), mono_directional, road.getSpeedLimit(), road.getLength() );
+							
+							if card ({row} union elems rows) <> card elems rows then 
+									rows := rows ^  [row]
+							else 
+									rows(getElementIndexInSeq(rows, row)).Direction := bi_directional;
+						);
+				);
+				return rows
+			);
+			
+		static protected cityMap2InterRows : CityMap ==> seq of inter_object
+			cityMap2InterRows(cityMap) == (
+				dcl inter_set : set of Intersection := cityMap.getSetOfInter();
+				dcl interRows : seq of inter_object := [];
+				for all interE in set inter_set do 
+					interRows := interRows ^ [mk_inter_object(interE.getID(), interE.type)];
+				return interRows;	
+			);
+
+
+end CSVCityMapFile

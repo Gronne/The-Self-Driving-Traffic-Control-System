@@ -1,0 +1,45 @@
+
+
+class CityMapFileFactory
+
+	operations
+	
+		static public loadCity : IFile`string_t * IFile`string_t * IFile`string_t * IFile`string_t ==> CityMap
+			loadCity(addressRoad, nameRoad, addressInter, nameInter) == (
+				return CSVCityMapFile`load( addressRoad, 
+																		CityMapFileFactory`appendType(nameRoad, ".csv"),
+																		addressInter, 
+																		CityMapFileFactory`appendType(nameInter, ".csv"));
+			);
+			
+		
+		static public loadCity : IFile`string_t * IFile`string_t ==> CityMap
+			loadCity(nameRoad, nameInter) == (
+				return CSVCityMapFile`load(CityMapFileFactory`appendType(nameRoad, ".csv"), CityMapFileFactory`appendType(nameInter, ".csv"));
+			);
+			
+		
+		static public saveCity : IFile`string_t * IFile`string_t * IFile`string_t * IFile`string_t * CityMap ==> ()
+			saveCity(addressRoad, nameRoad, addressInter, nameInter, cityMap) == (
+				CSVCityMapFile`save(addressRoad, CityMapFileFactory`appendType(nameRoad, ".csv"), 
+														addressInter, CityMapFileFactory`appendType(nameInter, ".csv"),
+														cityMap);
+			);
+			
+		
+		static public saveCity : IFile`string_t * IFile`string_t * CityMap ==> ()
+			saveCity(nameRoad, nameInter, cityMap) == (
+				CSVCityMapFile`save(CityMapFileFactory`appendType(nameRoad, ".csv"), CityMapFileFactory`appendType(nameInter, ".csv"), cityMap);
+			);
+			
+		static protected appendType : IFile`string_t * IFile`string_t ==> IFile`string_t
+			appendType(name, type) == (
+				if len name > len type and name((len name) - (len type - 1),...,(len name)) = type then 
+					return name
+				else 
+					return name ^ type;
+				
+			);
+
+
+end CityMapFileFactory
