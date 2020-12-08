@@ -1,4 +1,4 @@
 "From","To","Direction","SpeedLimit","Length"
-"B","A","bi",20,10
-"B","C","mono",40,30
-"C","A","mono",60,50
+"A","B","bi",1,2
+"A","C","mono",3,4
+"C","B","bi",5,6
